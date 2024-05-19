@@ -1,4 +1,4 @@
-module KleinberBurstDetection
+module KleinbergBurstDetection
 
 ###
 # The following function is used to solve the MLE problem as a dynamic program (maximizing log-lieklihood).
@@ -25,7 +25,7 @@ function kbd_standard_transition_cost()
 end
 
 function kbd_standard_data_cost()
-
+    
 end
 
 function burstDetection(event_times::Vector{Float64},s=2.0)
