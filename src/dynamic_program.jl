@@ -19,10 +19,11 @@ function solve_dynamic_program(Δt::Vector{Float64},transition_cost,data_model,m
     # allocate cost matrix, which has length (n,maxState+1) we allow any starting state with no penalization
     COST = zeros(Float64,(n,maxState+1))
     PTR = zeros(Int64,(n,maxState+1))
-    # inital state has only data cost
+    # inital state has data cost and transition cost starting from 0
     maxInd = maxState+1
     for sind ∈ 1:maxInd
         COST[1,sind] = data_model(Δt[1],sind-1,args_data)
+        COST[1,sind] += transition_cost(0,sind-1,args_transition)
     end
     # populate the transition cost matrix
     TC = zeros(Float64,(maxState+1,maxState+1))

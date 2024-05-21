@@ -9,7 +9,7 @@ include("dynamic_program.jl")
 export BurstNode, BurstStructure, detect_bursts, hierarchical_burst_structure
 
 mutable struct BurstNode
-    activity::Int64
+    level::Int64
     start_index::Int64
     end_index::Int64
     start_time::Float64
@@ -19,9 +19,9 @@ mutable struct BurstNode
 end
 
 AbstractTrees.children(x::BurstNode) = x.children
-AbstractTrees.nodevalue(x::BurstNode) = x.activity
+AbstractTrees.nodevalue(x::BurstNode) = x.level
 
-AbstractTrees.printnode(io::IO,x::BurstNode) = @printf(io,"Lvl: %i start: %.5f end: %.5f",x.activity,x.start_time,x.end_time)
+AbstractTrees.printnode(io::IO,x::BurstNode) = @printf(io,"Lvl: %i start: %.3f end: %.3f",x.level,x.start_time,x.end_time)
 
 # printing the tree structure
 function Base.show(io::IO,x::BurstNode)
@@ -30,7 +30,8 @@ end
 
 struct BurstStructure
     times::Vector{Float64}
-    activity::Vector{Int64}
+    level::Vector{Int64}
+    activity_rate::Vector{Float64}
     hierarchy::BurstNode
 end
 
@@ -41,8 +42,8 @@ function Base.show(io::IO,x::BurstStructure)
     print(io,x.times)
     print(io,"\n")
 
-    print(io,"activity state: ")
-    print(io,x.activity)
+    print(io,"activity level: ")
+    print(io,x.level)
     print(io,"\n")
 
     print(io,"hierarchy: \n")
@@ -59,10 +60,10 @@ function hierarchical_burst_structure(times::Vector{Float64},state_sequence::Vec
     # now iterate through the states and build the tree
     cursor = root
     for t ∈ 1:n
-        while cursor.activity != state_sequence[t]
-            if cursor.activity < state_sequence[t]
+        while cursor.level != state_sequence[t]
+            if cursor.level < state_sequence[t]
                 # make a new intermediate node
-                next_cursor = BurstNode(cursor.activity+1,t,t,times[t],times[t],[],cursor)
+                next_cursor = BurstNode(cursor.level+1,t,t,times[t],times[t],[],cursor)
                 push!(cursor.children,next_cursor)
                 cursor = next_cursor
             else
@@ -79,10 +80,6 @@ function hierarchical_burst_structure(times::Vector{Float64},state_sequence::Vec
     end
     return root
 end
-
-###
-# printing the tree structure
-###
 
 ###
 # Given the list of event times this function performs Kleinbergs Algorithm and 
@@ -126,10 +123,11 @@ function detect_bursts(event_times::Vector{Float64},s=2.0,γ=1.0)
     args_data = (α0,s)
     state_sequence, _ = solve_dynamic_program(Δt,kbd_standard_transition_cost,kbd_standard_data_model,Kinf,args_transition,args_data)
    
-    # generate the burst hierarch tree structure
+    # generate the hierarchical tree structure of the bursts
     root = hierarchical_burst_structure(sorted_events,state_sequence)
     # since we sorted in the beginning, we shoudl return the sorted events aswell in the result
-    result = BurstStructure(sorted_events,state_sequence,root)
+    activity_rate = (α0/scale) .* (s.^state_sequence)
+    result = BurstStructure(sorted_events,state_sequence,activity_rate,root)
     return result
 end
 
