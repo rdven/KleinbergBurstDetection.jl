@@ -3,6 +3,9 @@ uuid = "cb45a5de-a23e-40b1-9452-9619139bcc89"
 authors = ["Roman Ventzke"]
 version = "1.0.0-DEV"
 
+[deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
+
 [compat]
 julia = "1.6.7"
 

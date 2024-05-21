@@ -1,9 +1,20 @@
 
 ###
+# The bound from Kleinbergs paper that reduces the infinite state automaton to a finitie state automaton with 
+# the same optimal trajectory estimate.
+# the time need to be rescaled to [0,1] domain already
+###
+function max_state_bound(Δt::Vector{Float64},s::Float64)
+    δ = minimum(Δt)
+    k = Int(ceil(1-log(δ)/log(s)))
+    return k
+end
+
+###
 # The following function is used to solve the MLE problem as a dynamic program (maximizing log-lieklihood).
 # This technically works
 ###
-function solveDynamicProgram(Δt::Vector{Float64},transition_cost,data_model,maxState::Int64,args_transition,args_data)::Tuple{Vector{Int64},Float64}
+function solve_dynamic_program(Δt::Vector{Float64},transition_cost,data_model,maxState::Int64,args_transition,args_data)::Tuple{Vector{Int64},Float64}
     n = size(Δt,1)
     # allocate cost matrix, which has length (n,maxState+1) we allow any starting state with no penalization
     COST = zeros(Float64,(n,maxState+1))
@@ -56,7 +67,5 @@ function solveDynamicProgram(Δt::Vector{Float64},transition_cost,data_model,max
     end
     # reduce to account for the index
     opt_trajectory = opt_trajectory .- 1
-    print(COST)
-    print(PTR)
     return opt_trajectory,best_final_cost
 end
