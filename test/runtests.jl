@@ -20,12 +20,12 @@ end
 
     # tests for the state bound for dynamic programming
     @test test_upper_bound_states(get_test_data_set_1(),2.0) == 11
-    @test test_upper_bound_states(get_test_data_set2_(),2.0) == 25
+    @test test_upper_bound_states(get_test_data_set_2(),2.0) == 25
 
     #####
     # test result on dataset 2
     ####
-    result_data_2 = detect_bursts(get_test_data_set_2(),2.0,1.0)
+    result_data_2 = detect_bursts(get_test_data_set_2(),1.5,0.35)
 
     ### we expect 3 different main bursts
     @test size(result_data_2.hierarchy.children,1) == 3
