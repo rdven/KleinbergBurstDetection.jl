@@ -28,7 +28,7 @@ end
     result_data_1 = detect_bursts(get_test_data_set_1(),2.0,1.0)
 
     ### we expect 2 different main bursts
-    @test size(result_data_2.hierarchy.children,1) == 2
+    @test size(result_data_1.hierarchy.children,1) == 2
 
     #####
     # test result on dataset 2
