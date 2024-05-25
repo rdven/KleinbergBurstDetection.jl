@@ -6,7 +6,7 @@ using Printf
 include("model_costs.jl")
 include("dynamic_program.jl")
 
-export BurstNode, BurstStructure, detect_bursts, hierarchical_burst_structure
+export BurstNode, BurstStructure, detect_bursts
 
 mutable struct BurstNode
     level::Int64
