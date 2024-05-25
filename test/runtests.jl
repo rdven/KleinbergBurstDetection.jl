@@ -2,7 +2,7 @@ using KleinbergBurstDetection
 using Test
 
 function get_test_data_set_1()
-    return [0.0,1.0,2.0,2.1,2.2,2.3,2.4,2.5,3.0,4.0,5.0,6.0,6.1,6.11,6.12,6.13,6.14,6.15,6.2,6.3,6.4,6.41,6.42,6.43,6.44,6.45,6.5,7.0,8.0,9.0,10.0]
+    return [0.0,1.0,2.0,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,3.0,4.0,5.0,6.0,6.1,6.11,6.12,6.13,6.14,6.15,6.2,6.3,6.4,6.41,6.42,6.43,6.44,6.45,6.5,7.0,8.0,9.0,10.0]
 end
 
 function get_test_data_set_2()
@@ -20,7 +20,15 @@ end
 
     # tests for the state bound for dynamic programming
     @test test_upper_bound_states(get_test_data_set_1(),2.0) == 11
-    @test test_upper_bound_states(get_test_data_set_2(),2.0) == 25
+    @test test_upper_bound_states(get_test_data_set_2(),2.0) == 22
+
+    #####
+    # test result on dataset 1
+    ####
+    result_data_1 = detect_bursts(get_test_data_set_1(),2.0,1.0)
+
+    ### we expect 2 different main bursts
+    @test size(result_data_2.hierarchy.children,1) == 2
 
     #####
     # test result on dataset 2
@@ -29,6 +37,8 @@ end
 
     ### we expect 3 different main bursts
     @test size(result_data_2.hierarchy.children,1) == 3
+
+    
 
     
 end
